@@ -26,7 +26,7 @@ This web server acts as a gateway that receives user prompts and routes them to 
 
 ## Python LLM Server Interface
 
-Your Python LLM server should implement this FastAPI interface:
+Python LLM server should implement this FastAPI interface:
 
 ```python
 from fastapi import FastAPI
@@ -50,39 +50,6 @@ async def infer(prompt: Prompt):
 - **Content-Type**: application/json
 - **Body**: `{"text": "your prompt here"}`
 
-## Architecture
-
-### Current Implementation (Round-Robin)
-
-Simple round-robin load distribution across LLM nodes:
-
-```java
-List<String> nodes = List.of(
-    "http://llm1:8001/infer",
-    "http://llm2:8001/infer"
-);
-
-AtomicInteger counter = new AtomicInteger();
-
-String pickNode() {
-    return nodes.get(counter.getAndIncrement() % nodes.size());
-}
-```
-
-### Future: Kubernetes Deployment
-
-Planned architecture with proper load balancing:
-- Spring Boot application
-- Kubernetes service for load balancing
-- Multiple LLM server pods
-
-## Configuration
-
-Configure LLM server endpoints in `application.properties`:
-
-```properties
-llm.servers=http://llm1:8001/infer,http://llm2:8001/infer
-```
 
 ## API Endpoints
 
