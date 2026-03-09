@@ -1,0 +1,21 @@
+# ONNX Model Configuration
+onnx:
+  model:
+    path: "models/fmops-distilbert-prompt-injection-onnx/model.onnx"
+    vocab: "models/fmops-distilbert-prompt-injection-onnx/vocab.txt"
+    tokenizer: "models/fmops-distilbert-prompt-injection-onnx/tokenizer.json"
+    threshold: 0.5
+
+# Spring Boot Configuration
+spring:
+  application:
+    name: "llm-web-gateway"
+  profiles:
+    active: "dev"
+
+# Logging Configuration
+logging:
+  level:
+    com.prompt.security: INFO
+    com.service: INFO
+    com.config: INFO

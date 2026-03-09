@@ -25,6 +25,11 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'com.microsoft.onnxruntime:onnxruntime:1.17.3'
+	implementation 'jakarta.annotation:jakarta.annotation-api:2.1.1'
+	implementation 'org.springframework.boot:spring-boot-starter-logging'
+	implementation 'ai.djl.huggingface:tokenizers:0.22.0'
+	implementation 'org.yaml:snakeyaml:2.2'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
 }

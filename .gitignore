@@ -27,3 +27,7 @@ replay_pid*
 .gradle/
 .vscode/
 build/
+
+# models
+models/
+models/*
