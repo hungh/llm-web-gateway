@@ -58,8 +58,6 @@ flowchart TD
     class RawResponse,FinalResponse response
     class Orchestrator orchestrator
 ```
-### Architecture Overview
-<img src="images/main_diagram.png" alt="LLM Web Gateway Architecture" width="800">
 
 ### Data Flow
 
