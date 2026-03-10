@@ -42,8 +42,16 @@ public class OnnxClassifier {
          logger.info("Initializing PromptInjectionClassifier with config from YAML");
         this.environment = OrtEnvironment.getEnvironment();
         this.session = environment.createSession(config.getModel(), new OrtSession.SessionOptions());
-        this.tokenizer = HuggingFaceTokenizer.newInstance(config.getTokenizer());
-        logger.info("PromptInjectionClassifier initialized with ONNX model: {}", config.getModel());
+        
+        // Load tokenizer from local file
+        try {
+            this.tokenizer = HuggingFaceTokenizer.newInstance(Paths.get(config.getTokenizer()));
+            logger.info("PromptInjectionClassifier initialized with ONNX model: {}", config.getModel());
+        } catch (Exception e) {
+            logger.error("Failed to load tokenizer from local file: {}", config.getTokenizer());
+            logger.error("Error: {}", e.getMessage());
+            throw e;
+        }
     }
     
     @PostConstruct
@@ -104,13 +112,23 @@ public class OnnxClassifier {
     private float[][] onnxInference(String prompt) throws Exception {
         Encoding encoding = tokenizer.encode(prompt);
 
-        // Create tensors with proper cleanup
+        // Create tensors with proper cleanup - convert 1D arrays to 2D (batch_size=1)
         OnnxTensor inputIdsTensor = null;
         OnnxTensor attentionMaskTensor = null;
         
         try {
-            inputIdsTensor = OnnxTensor.createTensor(environment, encoding.getIds());
-            attentionMaskTensor = OnnxTensor.createTensor(environment, encoding.getAttentionMask());
+            // Convert 1D arrays to 2D arrays with batch_size=1
+            long[] inputIds1D = encoding.getIds();
+            long[] attentionMask1D = encoding.getAttentionMask();
+            
+            long[][] inputIds2D = new long[1][inputIds1D.length];
+            long[][] attentionMask2D = new long[1][attentionMask1D.length];
+            
+            System.arraycopy(inputIds1D, 0, inputIds2D[0], 0, inputIds1D.length);
+            System.arraycopy(attentionMask1D, 0, attentionMask2D[0], 0, attentionMask1D.length);
+            
+            inputIdsTensor = OnnxTensor.createTensor(environment, inputIds2D);
+            attentionMaskTensor = OnnxTensor.createTensor(environment, attentionMask2D);
             
             Map<String, OnnxTensor> inputs = Map.of(
                 "input_ids", inputIdsTensor,

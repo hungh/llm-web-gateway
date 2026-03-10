@@ -2,12 +2,17 @@ package com.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.config.YamlPropertySourceFactory;
+
 
 @Configuration
 @ConfigurationProperties(prefix = "onnx.model")
+@PropertySource(value = "file:config.yaml", factory = YamlPropertySourceFactory.class)
 public class AppConfig {
     
     private static final Logger logger = LoggerFactory.getLogger(AppConfig.class);
